@@ -3,6 +3,7 @@ import CabinRow from "./CabinRow";
 import { useCabins } from "./useCabin";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import Empty from "../../ui/Empty";
 import { useSearchParams } from "react-router-dom";
 
 function CabinTable() {
@@ -10,7 +11,7 @@ function CabinTable() {
   const [searchParams] = useSearchParams();
 
   if (isLoading) return <Spinner />;
-
+  if (!cabins.length) return <Empty resourceName="bookings" />;
   // 1)_FILTER
   const filterValue = searchParams.get("discount") || "all";
 
@@ -23,11 +24,12 @@ function CabinTable() {
 
   // 2) SORT
   const sortBy = searchParams.get("sortBy") || "startDate-asc";
-  
+
   const [field, direction] = sortBy.split("-");
   const modifier = direction === "asc" ? 1 : -1;
-  const sortedCabins =
-    filteredCabins.sort((a, b) => (a[field] - b[field]) * modifier);
+  const sortedCabins = filteredCabins.sort(
+    (a, b) => (a[field] - b[field]) * modifier
+  );
 
   return (
     <Menus>
